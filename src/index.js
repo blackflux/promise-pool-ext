@@ -33,7 +33,13 @@ module.exports.Pool = (opt = {}) => {
         success: true
       };
       fns.forEach((fn, idx) => {
-        const wrappedFn = () => fn()
+        const wrappedFn = () => new Promise((res, rej) => {
+          try {
+            res(fn());
+          } catch (e) {
+            rej(e);
+          }
+        })
           .catch((e) => {
             state.success = false;
             return e;

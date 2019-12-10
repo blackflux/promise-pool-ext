@@ -6,10 +6,11 @@ const { Pool } = require('../src/index');
 const sleep = util.promisify(setTimeout);
 
 describe('Testing Promise Pool', { record: console }, () => {
+  let log;
   let Worker;
   before(() => {
     // eslint-disable-next-line no-console
-    const log = (...args) => console.log(...args);
+    log = (...args) => console.log(...args);
     Worker = (id, delayMs) => () => new Promise((resolve) => {
       log(`start ${id}`);
       sleep(delayMs);
@@ -31,5 +32,13 @@ describe('Testing Promise Pool', { record: console }, () => {
       'start 2',
       'end 2'
     ]);
+  });
+
+  it('Testing non promise', async () => {
+    const pool = Pool({ concurrency: 1 });
+    const result = await pool([
+      () => 1
+    ]);
+    expect(result).to.deep.equal([1]);
   });
 });
