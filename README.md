@@ -32,7 +32,7 @@ pool([
 ]);
 
 // queue function, returns Promise < function result >
-pool(async () => { /* do async logic here */ })
+pool(async () => { /* do async logic here */ });
 ```
 
 ## Errors
