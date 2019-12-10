@@ -1,16 +1,15 @@
 const Joi = require('joi-strict');
 
-module.exports.Pool = (opt = {}) => {
+module.exports.Pool = (opt) => {
   Joi.assert(opt, Joi.object().keys({
-    concurrency: Joi.number().integer().min(1).optional()
+    concurrency: Joi.number().integer().min(1)
   }));
-  const concurrency = opt.concurrency || 10;
 
   let pending = 0;
   const queue = [];
 
   const processQueue = () => {
-    while (queue.length !== 0 && pending < concurrency) {
+    while (queue.length !== 0 && pending < opt.concurrency) {
       queue.shift()();
       pending += 1;
     }
