@@ -6,7 +6,11 @@ describe('Testing checkForRecursion', () => {
   let helper;
   beforeEach(() => {
     helper = (graph, error) => {
-      expect(() => checkForRecursion(graph)).to.throw(error);
+      if (error === null) {
+        expect(checkForRecursion((graph))).to.equal(undefined);
+      } else {
+        expect(() => checkForRecursion(graph)).to.throw(error);
+      }
     };
   });
 
@@ -39,5 +43,16 @@ describe('Testing checkForRecursion', () => {
 
   it('Testing self-recursion', () => {
     helper({ p1: ['p1'] }, 'Recursion detected: p1 <- p1');
+  });
+
+  it('Testing graph ok', () => {
+    helper({
+      pA: [],
+      pB: ['pA'],
+    }, null);
+  });
+
+  it('Testing empty graph', () => {
+    helper({}, null);
   });
 });
