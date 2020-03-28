@@ -1,17 +1,27 @@
-module.exports = (graph) => {
-  const nodes = new Set(Object.keys(graph));
-  const searchCycle = (trace, node) => {
-    const cycleStartIdx = trace.indexOf(node);
-    if (cycleStartIdx !== -1) {
-      throw new Error(`Cycle detected: ${trace
-        .slice(cycleStartIdx).concat(node).join(' <- ')}`);
+module.exports = (G) => {
+  const pending = new Set(Object.keys(G));
+  while (pending.size !== 0) {
+    const trace = [pending.values().next().value];
+    const parentIdx = [0];
+    pending.delete(trace[0]);
+
+    while (trace.length !== 0) {
+      const lastIdx = trace.length - 1;
+      const parent = G[trace[lastIdx]][parentIdx[lastIdx]];
+      if (parent === undefined) {
+        trace.pop();
+        parentIdx.pop();
+      } else {
+        if (trace.includes(parent)) {
+          throw new Error(`Cycle detected: ${trace
+            .slice(trace.indexOf(parent)).concat(parent).join(' <- ')}`);
+        }
+        parentIdx[lastIdx] += 1;
+        if (pending.delete(parent)) {
+          trace.push(parent);
+          parentIdx.push(0);
+        }
+      }
     }
-    if (nodes.delete(node) === true) {
-      const nextTrace = trace.concat(node);
-      graph[node].forEach((nextNode) => searchCycle(nextTrace, nextNode));
-    }
-  };
-  while (nodes.size !== 0) {
-    searchCycle([], nodes.values().next().value);
   }
 };

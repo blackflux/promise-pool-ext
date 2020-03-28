@@ -27,7 +27,8 @@ describe('Testing checkCyclic', () => {
       p0: ['p1'],
       p1: ['p3'],
       p2: ['p1'],
-      p3: ['p2']
+      p3: ['p2'],
+      p4: ['p3']
     }, 'p1 <- p3 <- p2 <- p1');
   });
 
