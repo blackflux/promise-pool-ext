@@ -107,7 +107,7 @@ describe('Testing Promise Pool Manager', { record: console }, () => {
         fn: Worker('p1', 100)
       }
     }));
-    expect(err.message).to.deep.equal('Recursion detected: p1 <- p1');
+    expect(err.message).to.deep.equal('Cycle detected: p1 <- p1');
     expect(recorder.get()).to.deep.equal([]);
   });
 });
