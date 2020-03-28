@@ -20,11 +20,10 @@ module.exports = (logic, { concurrency = 50 } = {}) => {
         throw new Error(`Recursion detected: ${prevs
           .slice(loopIdx).concat(next).join(' <- ')}`);
       }
-      if (steps.delete(next) === false) {
-        return;
+      if (steps.delete(next) === true) {
+        (logic[next].requires || [])
+          .forEach((n) => validate(prevs.concat(next), n));
       }
-      (logic[next].requires || [])
-        .forEach((n) => validate(prevs.concat(next), n));
     };
     do {
       validate([], steps.values().next().value);
