@@ -47,7 +47,7 @@ module.exports = (logic, { concurrency = 50 } = {}) => {
         return pool(async () => {
           try {
             const kwargs = (await pool(task.requires.map((n) => async () => [n, await ready[n]])))
-              .reduce((p, [k, v]) => Object.assign(p, { [k]: v }));
+              .reduce((p, [k, v]) => Object.assign(p, { [k]: v }), {});
             return task.fn(kwargs);
           } catch (errors) {
             throw errors.find((e) => e instanceof Error);
