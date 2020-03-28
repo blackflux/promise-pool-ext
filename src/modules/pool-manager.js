@@ -1,7 +1,7 @@
 const assert = require('assert');
 const Joi = require('joi-strict');
 const Pool = require('./pool');
-const checkForRecursion = require('../util/check-for-recursion');
+const checkCyclic = require('../util/check-cyclic');
 
 module.exports = (logic, { concurrency = 50 } = {}) => {
   Joi.assert(logic, Joi.object().min(1).pattern(
@@ -12,7 +12,7 @@ module.exports = (logic, { concurrency = 50 } = {}) => {
       fn: Joi.function()
     })
   ));
-  checkForRecursion(Object.entries(logic)
+  checkCyclic(Object.entries(logic)
     .reduce((p, [k, v]) => Object.assign(p, { [k]: v.requires || [] }), {}));
 
   const pool = Pool({ concurrency });
