@@ -35,6 +35,35 @@ pool([
 pool(async () => { /* do async logic here */ });
 ```
 
+<!-- eslint-disable-next-line import/no-unresolved, import/no-extraneous-dependencies -->
+```js
+const { PoolManager } = require('promise-pool-ext');
+
+const manager = PoolManager({
+  check1: {
+    if: () => false, // when not true returned, promise is not resolved and undefined is returned
+    fn: () => { /* return async logic */ }
+  },
+  check2: {
+    requires: ['check1'],
+    fn: ({ check1 }) => {
+      if (check1) { /* return async logic */ }
+    }
+  },
+  data: {
+    requires: ['check1', 'check2'],
+    fn: ({ check1, check2 }) => {
+      if (check1 && check2) { /* return async logic */ }
+    }
+  }
+}, { concurrency: 10 });
+
+// returns Promise < data.fn result >
+manager.get('data');
+```
+
+See tests for more examples
+
 ## Errors
 
 When a promise is rejected or an error is thrown,
