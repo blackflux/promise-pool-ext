@@ -11,7 +11,7 @@ module.exports = (graph) => {
       graph[node].forEach((nextNode) => validate(nextTrace, nextNode));
     }
   };
-  do {
+  while (nodes.size !== 0) {
     validate([], nodes.values().next().value);
-  } while (nodes.size !== 0);
+  }
 };
