@@ -100,33 +100,84 @@ describe('Testing Promise Pool Manager', { record: console }, () => {
     expect(recorder.get()).to.deep.equal([]);
   });
 
-  it('Testing recursion error', async ({ recorder, capture }) => {
-    const err = await capture(() => PoolManager({
-      p1: {
-        requires: ['p3'],
-        fn: Worker('p1', 100)
-      },
-      p2: {
-        requires: ['p1'],
-        fn: Worker('p2', 100)
-      },
-      p3: {
-        requires: ['p2'],
-        fn: Worker('p3', 100)
-      }
-    }));
-    expect(err.message).to.deep.equal('Recursion detected: p1 <- p3 <- p2 <- p1');
-    expect(recorder.get()).to.deep.equal([]);
-  });
+  describe('Testing recursion detection', { record: console }, () => {
+    it('Testing recursion error (full-loop)', async ({ recorder, capture }) => {
+      const err = await capture(() => PoolManager({
+        p1: {
+          requires: ['p3'],
+          fn: Worker('p1', 100)
+        },
+        p2: {
+          requires: ['p1'],
+          fn: Worker('p2', 100)
+        },
+        p3: {
+          requires: ['p2'],
+          fn: Worker('p3', 100)
+        }
+      }));
+      expect(err.message).to.deep.equal('Recursion detected: p1 <- p3 <- p2 <- p1');
+      expect(recorder.get()).to.deep.equal([]);
+    });
 
-  it('Testing self recursion error', async ({ recorder, capture }) => {
-    const err = await capture(() => PoolManager({
-      p1: {
-        requires: ['p1'],
-        fn: Worker('p1', 100)
-      }
-    }));
-    expect(err.message).to.deep.equal('Recursion detected: p1 <- p1');
-    expect(recorder.get()).to.deep.equal([]);
+    it('Testing recursion error (sub-loop)', async ({ recorder, capture }) => {
+      const err = await capture(() => PoolManager({
+        p0: {
+          requires: ['p1'],
+          fn: Worker('p0', 100)
+        },
+        p1: {
+          requires: ['p3'],
+          fn: Worker('p1', 100)
+        },
+        p2: {
+          requires: ['p1'],
+          fn: Worker('p2', 100)
+        },
+        p3: {
+          requires: ['p2'],
+          fn: Worker('p3', 100)
+        }
+      }));
+      expect(err.message).to.deep.equal('Recursion detected: p1 <- p3 <- p2 <- p1');
+      expect(recorder.get()).to.deep.equal([]);
+    });
+
+    it('Testing recursion error (one ok, one loop)', async ({ recorder, capture }) => {
+      const err = await capture(() => PoolManager({
+        pA: {
+          fn: Worker('pA', 100)
+        },
+        pB: {
+          requires: ['pA'],
+          fn: Worker('pB', 100)
+        },
+        p1: {
+          requires: ['p3'],
+          fn: Worker('p1', 100)
+        },
+        p2: {
+          requires: ['p1'],
+          fn: Worker('p2', 100)
+        },
+        p3: {
+          requires: ['p2'],
+          fn: Worker('p3', 100)
+        }
+      }));
+      expect(err.message).to.deep.equal('Recursion detected: p1 <- p3 <- p2 <- p1');
+      expect(recorder.get()).to.deep.equal([]);
+    });
+
+    it('Testing self recursion error', async ({ recorder, capture }) => {
+      const err = await capture(() => PoolManager({
+        p1: {
+          requires: ['p1'],
+          fn: Worker('p1', 100)
+        }
+      }));
+      expect(err.message).to.deep.equal('Recursion detected: p1 <- p1');
+      expect(recorder.get()).to.deep.equal([]);
+    });
   });
 });
