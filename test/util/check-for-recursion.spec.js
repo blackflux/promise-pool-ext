@@ -48,7 +48,7 @@ describe('Testing checkForRecursion', () => {
   it('Testing graph ok', () => {
     helper({
       pA: [],
-      pB: ['pA'],
+      pB: ['pA']
     }, null);
   });
 
