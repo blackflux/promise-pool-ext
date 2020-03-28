@@ -1,10 +1,10 @@
 module.exports = (graph) => {
   const nodes = new Set(Object.keys(graph));
   const validate = (trace, node) => {
-    const loopIdx = trace.indexOf(node);
-    if (loopIdx !== -1) {
+    const loopStartIdx = trace.indexOf(node);
+    if (loopStartIdx !== -1) {
       throw new Error(`Recursion detected: ${trace
-        .slice(loopIdx).concat(node).join(' <- ')}`);
+        .slice(loopStartIdx).concat(node).join(' <- ')}`);
     }
     if (nodes.delete(node) === true) {
       const nextTrace = trace.concat(node);
