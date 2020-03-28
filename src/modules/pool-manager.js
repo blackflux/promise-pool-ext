@@ -1,6 +1,7 @@
 const assert = require('assert');
 const Joi = require('joi-strict');
 const Pool = require('./pool');
+const checkForRecursion = require('../util/check-for-recursion');
 
 module.exports = (logic, { concurrency = 50 } = {}) => {
   Joi.assert(logic, Joi.object().min(1).pattern(
@@ -11,24 +12,8 @@ module.exports = (logic, { concurrency = 50 } = {}) => {
       fn: Joi.function()
     })
   ));
-
-  (() => {
-    const steps = new Set(Object.keys(logic));
-    const validate = (prevs, next) => {
-      const loopIdx = prevs.indexOf(next);
-      if (loopIdx !== -1) {
-        throw new Error(`Recursion detected: ${prevs
-          .slice(loopIdx).concat(next).join(' <- ')}`);
-      }
-      if (steps.delete(next) === true) {
-        (logic[next].requires || [])
-          .forEach((n) => validate(prevs.concat(next), n));
-      }
-    };
-    do {
-      validate([], steps.values().next().value);
-    } while (steps.size !== 0);
-  })();
+  checkForRecursion(Object.entries(logic)
+    .reduce((p, [k, v]) => Object.assign(p, { [k]: v.requires || [] }), {}));
 
   const pool = Pool({ concurrency });
   const ready = {};
