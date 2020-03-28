@@ -13,19 +13,22 @@ module.exports = (logic, { concurrency = 50 } = {}) => {
   ));
 
   (() => {
-    const steps = Object.keys(logic);
-    const validate = (paths) => {
-      const firstStep = paths[0];
-      const lastStep = paths[paths.length - 1];
-      if (paths.length !== 1 && firstStep === lastStep) {
-        throw new Error(`Recursion detected: ${paths.join(' <- ')}`);
+    const steps = new Set(Object.keys(logic));
+    const validate = (prevs, next) => {
+      const loopIdx = prevs.indexOf(next);
+      if (loopIdx !== -1) {
+        throw new Error(`Recursion detected: ${prevs
+          .slice(loopIdx).concat(next).join(' <- ')}`);
       }
-      (logic[lastStep].requires || [])
-        .forEach((s) => validate(paths.concat(s)));
+      if (steps.delete(next) === false) {
+        return;
+      }
+      (logic[next].requires || [])
+        .forEach((n) => validate(prevs.concat(next), n));
     };
     do {
-      validate([steps.shift()]);
-    } while (steps.length !== 0);
+      validate([], steps.values().next().value);
+    } while (steps.size !== 0);
   })();
 
   const pool = Pool({ concurrency });
