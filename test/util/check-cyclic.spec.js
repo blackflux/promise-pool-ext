@@ -8,7 +8,13 @@ describe('Testing checkCyclic', () => {
   let helper;
   beforeEach(() => {
     Graph = (cyclic) => new Promise((resolve) => {
-      randomDag.graphlib((err, g) => {
+      randomDag.graphlib({
+        max_per_rank: 10, // how 'fat' the DAG should be
+        min_per_rank: 1,
+        max_ranks: 10, // how 'tall' the DAG should be
+        min_ranks: 1,
+        probability: 0.3 // chance of having an edge
+      }, (err, g) => {
         const result = {};
         g.nodes().forEach((n) => {
           result[n] = [];
