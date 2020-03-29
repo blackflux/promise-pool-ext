@@ -27,6 +27,7 @@
     "js-gardener": "2.0.145",
     "node-tdd": "2.10.3",
     "nyc": "15.0.0",
+    "random-dag": "1.0.4",
     "semantic-release": "17.0.4"
   },
   "licenses": [
