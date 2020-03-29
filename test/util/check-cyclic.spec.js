@@ -1,13 +1,41 @@
 const expect = require('chai').expect;
 const { describe } = require('node-tdd');
+const randomDag = require('random-dag');
 const checkCyclic = require('../../src/util/check-cyclic');
 
 describe('Testing checkCyclic', () => {
+  let Graph;
   let helper;
   beforeEach(() => {
+    Graph = (cyclic) => new Promise((resolve) => {
+      randomDag.graphlib((err, g) => {
+        const result = {};
+        g.nodes().forEach((n) => {
+          result[n] = [];
+        });
+        g.edges().forEach((e) => {
+          result[e.v].push(e.w);
+        });
+        if (cyclic === true) {
+          const randomNode = Object.keys(result)[Math.floor(Math.random() * g.nodeCount())];
+          const trace = [randomNode];
+          let parents = result[randomNode];
+          while (parents.length !== 0) {
+            const parent = parents[Math.floor(Math.random() * parents.length)];
+            trace.push(parent);
+            parents = result[parent];
+          }
+          const otherNode = trace[Math.floor(Math.random() * trace.length)];
+          result[otherNode].push(randomNode);
+        }
+        resolve(result);
+      });
+    });
     helper = (graph, error) => {
-      if (error === null) {
+      if (error === false) {
         expect(checkCyclic((graph))).to.equal(undefined);
+      } else if (error === true) {
+        expect(() => checkCyclic(graph)).to.throw();
       } else {
         expect(() => checkCyclic(graph)).to.throw(`Cycle detected: ${error}`);
       }
@@ -50,10 +78,26 @@ describe('Testing checkCyclic', () => {
     helper({
       pA: [],
       pB: ['pA']
-    }, null);
+    }, false);
   });
 
   it('Testing empty graph', () => {
-    helper({}, null);
+    helper({}, false);
+  });
+
+  it('Testing Random Non Cyclic', async () => {
+    for (let idx = 0; idx < 1000; idx += 1) {
+      // eslint-disable-next-line no-await-in-loop
+      const G = await Graph(false);
+      helper(G, false);
+    }
+  });
+
+  it('Testing Random Cyclic', async () => {
+    for (let idx = 0; idx < 1000; idx += 1) {
+      // eslint-disable-next-line no-await-in-loop
+      const G = await Graph(true);
+      helper(G, true);
+    }
   });
 });
