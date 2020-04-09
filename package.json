@@ -103,6 +103,6 @@
     "url": "https://github.com/blackflux/promise-pool-ext/issues"
   },
   "dependencies": {
-    "joi-strict": "1.2.1"
+    "joi-strict": "1.2.2"
   }
 }
