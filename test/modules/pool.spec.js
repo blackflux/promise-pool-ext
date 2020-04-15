@@ -62,4 +62,13 @@ describe('Testing Promise Pool', { record: console }, () => {
     ]));
     expect(result).to.deep.equal([e]);
   });
+
+  it('Testing timout', async ({ capture }) => {
+    const pool = Pool({ concurrency: 1, timeout: 1 });
+    const err = await capture(() => pool([
+      () => new Promise(() => {})
+    ]));
+    expect(err.length).to.equal(1);
+    expect(err[0].message).to.equal('Promise "" timed out after 1 ms');
+  });
 });
