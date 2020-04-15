@@ -19,6 +19,8 @@ Install with [npm](https://www.npmjs.com/):
 
 ## Usage
 
+### Pool
+
 <!-- eslint-disable-next-line import/no-unresolved, import/no-extraneous-dependencies -->
 ```js
 const { Pool } = require('promise-pool-ext');
@@ -34,6 +36,10 @@ pool([
 // queue function, returns Promise < function result >
 pool(async () => { /* do async logic here */ });
 ```
+
+See tests for more examples
+
+### PoolManager
 
 <!-- eslint-disable-next-line import/no-unresolved, import/no-extraneous-dependencies -->
 ```js
@@ -63,6 +69,19 @@ manager.get('data');
 ```
 
 See tests for more examples
+
+
+### Parameters
+
+#### concurrency: Integer
+
+How many promises can resolve in parallel.
+
+#### timeout: Integer = undefined
+
+Maximum amount of time in ms that a promise can take to resolve before a failure is returned.
+
+If `0` or `undefined` is passes, no timeout is enforced.
 
 ## Errors
 

@@ -1,8 +1,10 @@
 const Joi = require('joi-strict');
+const promiseTimeout = require('../util/promise-timeout');
 
 module.exports = (opt) => {
   Joi.assert(opt, Joi.object().keys({
-    concurrency: Joi.number().integer().min(1)
+    concurrency: Joi.number().integer().min(1),
+    timeout: Joi.number().integer().min(0).optional()
   }));
 
   let pending = 0;
@@ -32,26 +34,26 @@ module.exports = (opt) => {
         success: true
       };
       fns.forEach((fn, idx) => {
-        const wrappedFn = () => new Promise((res, rej) => {
+        const wrappedFn = async () => {
+          let r;
           try {
-            res(fn());
+            r = await (
+              [0, undefined].includes(opt.timeout)
+                ? fn()
+                : promiseTimeout(fn(), opt.timeout, fn.name)
+            );
           } catch (e) {
-            rej(e);
-          }
-        })
-          .catch((e) => {
             state.success = false;
-            return e;
-          })
-          .then((r) => {
-            state.result[idx] = r;
-            state.processed += 1;
-            pending -= 1;
-            if (state.processed === state.total) {
-              (state.success ? resolve : reject)(isArray ? state.result : state.result[0]);
-            }
-            processQueue();
-          });
+            r = e;
+          }
+          state.result[idx] = r;
+          state.processed += 1;
+          pending -= 1;
+          if (state.processed === state.total) {
+            (state.success ? resolve : reject)(isArray ? state.result : state.result[0]);
+          }
+          processQueue();
+        };
         queue.push(wrappedFn);
       });
       processQueue();
