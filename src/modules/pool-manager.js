@@ -3,7 +3,7 @@ const Joi = require('joi-strict');
 const Pool = require('./pool');
 const checkCyclic = require('../util/check-cyclic');
 
-module.exports = (logic, { concurrency = 50 } = {}) => {
+module.exports = (logic, opts) => {
   Joi.assert(logic, Joi.object().min(1).pattern(
     Joi.string(),
     Joi.object().keys({
@@ -15,7 +15,7 @@ module.exports = (logic, { concurrency = 50 } = {}) => {
   checkCyclic(Object.entries(logic)
     .reduce((p, [k, v]) => Object.assign(p, { [k]: v.requires || [] }), {}));
 
-  const pool = Pool({ concurrency });
+  const pool = Pool({ concurrency: 50, ...opts });
   const ready = {};
 
   const enqueue = async (name) => {
