@@ -73,13 +73,15 @@ See tests for more examples
 
 ### Parameters
 
-#### concurrency: Integer (required)
+#### concurrency: Integer
 
 How many promises can resolve in parallel.
 
-#### timeout: Integer (required) = undefined
+#### timeout: Integer = undefined
 
 Maximum amount of time in ms that a promise can take to resolve before a failure is returned.
+
+If `0` or `undefined` is passes, no timeout is enforced.
 
 ## Errors
 
