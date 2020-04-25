@@ -36,8 +36,10 @@ module.exports = (logic, opts) => {
             const kwargs = (await pool(task.requires.map((n) => async () => [n, await ready[n]])))
               .reduce((p, [k, v]) => Object.assign(p, { [k]: v }), {});
             return task.fn(kwargs);
-          } catch (errors) {
-            throw errors.find((e) => e instanceof Error);
+          } catch (err) {
+            throw Array.isArray(err)
+              ? err.find((e) => e instanceof Error) || err
+              : err;
           }
         });
       })();
