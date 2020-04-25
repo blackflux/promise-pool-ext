@@ -37,7 +37,9 @@ module.exports = (logic, opts) => {
               .reduce((p, [k, v]) => Object.assign(p, { [k]: v }), {});
             return task.fn(kwargs);
           } catch (errors) {
-            throw errors.find((e) => e instanceof Error);
+            throw Array.isArray(errors)
+              ? errors.find((e) => e instanceof Error) || errors
+              : errors;
           }
         });
       })();

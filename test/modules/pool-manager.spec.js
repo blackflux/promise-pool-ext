@@ -83,31 +83,68 @@ describe('Testing Promise Pool Manager', { record: console }, () => {
     ]);
   });
 
-  it('Testing error thrown from nested', async ({ recorder, capture }) => {
-    const manager = PoolManager({
-      err: {
-        fn: () => {
-          throw new Error('error');
+  describe('Testing Error Handling', { record: console }, () => {
+    it('Testing error thrown from nested', async ({ recorder, capture }) => {
+      const manager = PoolManager({
+        err: {
+          fn: () => {
+            throw new Error('error');
+          }
+        },
+        result: {
+          requires: ['err'],
+          fn: Worker('result', 100)
         }
-      },
-      result: {
-        requires: ['err'],
-        fn: Worker('result', 100)
-      }
+      });
+      const err = await capture(() => manager.get('result'));
+      expect(err.message).to.deep.equal('error');
+      expect(recorder.get()).to.deep.equal([]);
     });
-    const err = await capture(() => manager.get('result'));
-    expect(err.message).to.deep.equal('error');
-    expect(recorder.get()).to.deep.equal([]);
-  });
 
-  it('Testing self recursion error', async ({ recorder, capture }) => {
-    const err = await capture(() => PoolManager({
-      p1: {
-        requires: ['p1'],
-        fn: Worker('p1', 100)
-      }
-    }));
-    expect(err.message).to.deep.equal('Cycle detected: p1 <- p1');
-    expect(recorder.get()).to.deep.equal([]);
+    it('Testing error thrown from nested as string', async ({ recorder, capture }) => {
+      const manager = PoolManager({
+        err: {
+          fn: () => {
+            // eslint-disable-next-line no-throw-literal
+            throw 'error';
+          }
+        },
+        result: {
+          requires: ['err'],
+          fn: Worker('result', 100)
+        }
+      });
+      const err = await capture(() => manager.get('result'));
+      expect(err).to.deep.equal(['error']);
+      expect(recorder.get()).to.deep.equal([]);
+    });
+
+    it('Testing error thrown from root', async ({ recorder, capture }) => {
+      const manager = PoolManager({
+        pre: {
+          fn: () => true
+        },
+        result: {
+          requires: ['pre'],
+          fn: () => {
+            throw new Error('error');
+          }
+        }
+      });
+      const err = await capture(() => manager.get('result'));
+      expect(err.message).to.deep.equal('error');
+      expect(recorder.get()).to.deep.equal([]);
+    });
+
+    it('Testing self recursion error', async ({ recorder, capture }) => {
+      const err = await capture(() => PoolManager({
+        p1: {
+          requires: ['p1'],
+          fn: Worker('p1', 100)
+        }
+      }));
+      expect(err.message).to.deep.equal('Cycle detected: p1 <- p1');
+      expect(recorder.get()).to.deep.equal([]);
+    });
   });
 });
