@@ -25,6 +25,9 @@ module.exports = (opt) => {
 
     const isArray = Array.isArray(payload);
     const fns = isArray ? payload : [payload];
+    if (fns.length === 0) {
+      return Promise.resolve([]);
+    }
 
     return new Promise((resolve, reject) => {
       const state = {
