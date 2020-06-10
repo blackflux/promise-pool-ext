@@ -72,7 +72,7 @@ describe('Testing Promise Pool', { record: console }, () => {
     expect(err[0].message).to.equal('Promise "" timed out after 1 ms');
   });
 
-  it('Testing empty set', async () => {
+  it('Testing empty list input', async () => {
     const pool = Pool({ concurrency: 1, timeout: 1 });
     const r = await pool([]);
     expect(r.length).to.equal(0);
