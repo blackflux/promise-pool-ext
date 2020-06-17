@@ -2,7 +2,6 @@ const util = require('util');
 
 const sleep = util.promisify(setTimeout);
 
-
 module.exports.sleep = sleep;
 module.exports.Worker = (() => {
   // eslint-disable-next-line no-console
