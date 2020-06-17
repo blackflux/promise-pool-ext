@@ -3,7 +3,6 @@ const { describe } = require('node-tdd');
 const Pool = require('../../src/modules/pool');
 const { Worker, sleep } = require('../util');
 
-
 describe('Testing Promise Pool', { record: console }, () => {
   it('Testing concurrency is 1', async ({ recorder }) => {
     const pool = Pool({ concurrency: 1 });
