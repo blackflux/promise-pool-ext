@@ -8,6 +8,7 @@
       "packageName": "promise-pool-ext",
       "projectName": "promise-pool-ext",
       "owner": "simlu",
+      "nodeVersion": "10",
       "ownerName": "Lukas Siemon",
       "mergeBot": "MrsFlux"
     }
