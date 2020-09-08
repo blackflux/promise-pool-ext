@@ -24,7 +24,7 @@
     "eslint-plugin-markdown": "1.0.2",
     "eslint-plugin-mocha": "8.0.0",
     "js-gardener": "2.0.167",
-    "node-tdd": "2.18.3",
+    "node-tdd": "2.18.4",
     "nyc": "15.1.0",
     "random-dag": "1.0.4",
     "semantic-release": "17.1.1",
@@ -104,6 +104,6 @@
     "url": "https://github.com/blackflux/promise-pool-ext/issues"
   },
   "dependencies": {
-    "joi-strict": "1.2.3"
+    "joi-strict": "1.2.4"
   }
 }
