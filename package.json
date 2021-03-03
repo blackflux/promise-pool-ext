@@ -28,7 +28,7 @@
     "node-tdd": "2.19.1",
     "nyc": "15.1.0",
     "random-dag": "1.0.4",
-    "semantic-release": "17.4.0"
+    "semantic-release": "17.4.1"
   },
   "licenses": [
     {
