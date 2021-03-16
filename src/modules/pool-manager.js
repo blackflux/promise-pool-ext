@@ -22,10 +22,10 @@ module.exports = (logic, opts) => {
     if (ready[name] === undefined) {
       ready[name] = (async () => {
         const task = logic[name];
-        if (task.if !== undefined && task.if() !== true) {
-          return undefined;
-        }
         if (task.requires === undefined || task.requires.length === 0) {
+          if (task.if !== undefined && task.if() !== true) {
+            return undefined;
+          }
           return pool(task.fn);
         }
         task.requires.forEach((n) => {
@@ -35,6 +35,9 @@ module.exports = (logic, opts) => {
           try {
             const kwargs = (await pool(task.requires.map((n) => async () => [n, await ready[n]])))
               .reduce((p, [k, v]) => Object.assign(p, { [k]: v }), {});
+            if (task.if !== undefined && task.if(kwargs) !== true) {
+              return undefined;
+            }
             return task.fn(kwargs);
           } catch (err) {
             throw Array.isArray(err)

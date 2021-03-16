@@ -83,6 +83,42 @@ describe('Testing Promise Pool Manager', { record: console }, () => {
     ]);
   });
 
+  it('Testing if returns false with requires', async ({ recorder }) => {
+    const manager = PoolManager({
+      a: {
+        if: () => false,
+        fn: Worker('a', 100)
+      },
+      b: {
+        requires: ['a'],
+        if: ({ a }) => a === 'a',
+        fn: Worker('b', 100)
+      }
+    });
+    expect(await manager.get('b')).to.deep.equal(undefined);
+    expect(recorder.get()).to.deep.equal([]);
+  });
+
+  it('Testing if returns true with requires', async ({ recorder }) => {
+    const manager = PoolManager({
+      a: {
+        fn: Worker('a', 100)
+      },
+      b: {
+        requires: ['a'],
+        if: ({ a }) => a === 'a',
+        fn: Worker('b', 100)
+      }
+    });
+    expect(await manager.get('b')).to.deep.equal('b');
+    expect(recorder.get()).to.deep.equal([
+      'start a',
+      'end a',
+      'start b',
+      'end b'
+    ]);
+  });
+
   describe('Testing Error Handling', { record: console }, () => {
     it('Testing error thrown from nested', async ({ recorder, capture }) => {
       const manager = PoolManager({
