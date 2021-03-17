@@ -22,10 +22,18 @@ module.exports = (logic, opts) => {
     if (ready[name] === undefined) {
       ready[name] = (async () => {
         const task = logic[name];
+        if (
+          task.if !== undefined
+          && (
+            task.if.length === 0
+            || task.requires === undefined
+            || task.requires.length === 0
+          )
+          && task.if() !== true
+        ) {
+          return undefined;
+        }
         if (task.requires === undefined || task.requires.length === 0) {
-          if (task.if !== undefined && task.if() !== true) {
-            return undefined;
-          }
           return pool(task.fn);
         }
         task.requires.forEach((n) => {
