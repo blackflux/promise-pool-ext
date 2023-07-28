@@ -1,7 +1,7 @@
-const expect = require('chai').expect;
-const { describe } = require('node-tdd');
-const Pool = require('../../src/modules/pool');
-const { Worker, sleep } = require('../util');
+import { expect } from 'chai';
+import { describe } from 'node-tdd';
+import Pool from '../../src/modules/pool.js';
+import { Worker, sleep } from '../util.js';
 
 describe('Testing Promise Pool', { record: console }, () => {
   it('Testing concurrency is 1', async ({ recorder }) => {
