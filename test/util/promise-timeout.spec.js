@@ -1,6 +1,6 @@
-const expect = require('chai').expect;
-const { describe } = require('node-tdd');
-const promiseTimeout = require('../../src/util/promise-timeout');
+import { expect } from 'chai';
+import { describe } from 'node-tdd';
+import promiseTimeout from '../../src/util/promise-timeout.js';
 
 describe('Testing promise-timeout', () => {
   it('Testing Promise does not finish within Timeout', async ({ capture }) => {

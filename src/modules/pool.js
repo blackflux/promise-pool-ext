@@ -1,7 +1,7 @@
-const Joi = require('joi-strict');
-const promiseTimeout = require('../util/promise-timeout');
+import Joi from 'joi-strict';
+import promiseTimeout from '../util/promise-timeout.js';
 
-module.exports = (opt) => {
+export default (opt) => {
   Joi.assert(opt, Joi.object().keys({
     concurrency: Joi.number().integer().min(1),
     timeout: Joi.number().integer().min(0).optional()

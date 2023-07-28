@@ -1,4 +1,4 @@
-module.exports = (G) => {
+export default (G) => {
   const pending = new Set(Object.keys(G));
   while (pending.size !== 0) {
     const trace = [pending.values().next().value];
