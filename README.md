@@ -23,7 +23,7 @@ Install with [npm](https://www.npmjs.com/):
 
 <!-- eslint-disable-next-line import/no-unresolved, import/no-extraneous-dependencies -->
 ```js
-const { Pool } = require('promise-pool-ext');
+import { Pool } from 'promise-pool-ext';
 
 const pool = Pool({ concurrency: 10 });
 
@@ -43,7 +43,7 @@ See tests for more examples
 
 <!-- eslint-disable-next-line import/no-unresolved, import/no-extraneous-dependencies -->
 ```js
-const { PoolManager } = require('promise-pool-ext');
+import { PoolManager } from 'promise-pool-ext';
 
 const manager = PoolManager({
   check1: {

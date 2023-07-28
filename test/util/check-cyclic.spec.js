@@ -1,7 +1,7 @@
-const expect = require('chai').expect;
-const { describe } = require('node-tdd');
-const randomDag = require('random-dag');
-const checkCyclic = require('../../src/util/check-cyclic');
+import { expect } from 'chai';
+import { describe } from 'node-tdd';
+import randomDag from 'random-dag';
+import checkCyclic from '../../src/util/check-cyclic.js';
 
 describe('Testing checkCyclic', () => {
   let Graph;

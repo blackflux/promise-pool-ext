@@ -1,5 +1,2 @@
-const Pool = require('./modules/pool');
-const PoolManager = require('./modules/pool-manager');
-
-module.exports.Pool = Pool;
-module.exports.PoolManager = PoolManager;
+export { default as Pool } from './modules/pool.js';
+export { default as PoolManager } from './modules/pool-manager.js';

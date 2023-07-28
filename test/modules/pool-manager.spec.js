@@ -1,7 +1,7 @@
-const expect = require('chai').expect;
-const { describe } = require('node-tdd');
-const PoolManager = require('../../src/modules/pool-manager');
-const { Worker } = require('../util');
+import { expect } from 'chai';
+import { describe } from 'node-tdd';
+import PoolManager from '../../src/modules/pool-manager.js';
+import { Worker } from '../util.js';
 
 describe('Testing Promise Pool Manager', { record: console }, () => {
   it('Testing pre executed only once', async ({ recorder }) => {

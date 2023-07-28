@@ -1,9 +1,9 @@
-const assert = require('assert');
-const Joi = require('joi-strict');
-const Pool = require('./pool');
-const checkCyclic = require('../util/check-cyclic');
+import assert from 'assert';
+import Joi from 'joi-strict';
+import Pool from './pool.js';
+import checkCyclic from '../util/check-cyclic.js';
 
-module.exports = (logic, opts) => {
+export default (logic, opts) => {
   Joi.assert(logic, Joi.object().min(1).pattern(
     Joi.string(),
     Joi.object().keys({
