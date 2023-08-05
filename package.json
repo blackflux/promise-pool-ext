@@ -70,7 +70,10 @@
     "url": "https://github.com/blackflux/promise-pool-ext/issues"
   },
   "dependencies": {
-    "joi-strict": "2.0.1"
+    "joi-strict": "3.0.0",
+    "string-width": "^6.1.0",
+    "strip-ansi": "^7.1.0",
+    "wrap-ansi": "^8.1.0"
   },
   "resolutions": {
     "strip-ansi": "^6.0.0",
