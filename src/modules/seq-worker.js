@@ -57,7 +57,7 @@ export default (opt) => {
       throwIfError();
       while (tasks.length !== 0) {
         // eslint-disable-next-line no-await-in-loop
-        await tasks.shift().assignment;
+        await tasks[0].assignment;
         throwIfError();
       }
     }
