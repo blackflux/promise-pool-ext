@@ -6,7 +6,8 @@ describe('Testing Exports', () => {
   it('Testing exported functions', async () => {
     expect(Object.entries(index).map(([k, v]) => [k, typeof v])).to.deep.equal([
       ['Pool', 'function'],
-      ['PoolManager', 'function']
+      ['PoolManager', 'function'],
+      ['SeqWorker', 'function']
     ]);
   });
 });
