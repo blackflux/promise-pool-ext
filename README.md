@@ -70,6 +70,21 @@ manager.get('data');
 
 See tests for more examples
 
+### SeqWorker
+
+Allows sequential handling of async tasks that are enqueued.
+
+#### enqueue(<fn>)
+
+Used to enqueue an (async) task. This task will be executed once
+all previous tasks have executed.
+
+#### flush()
+
+Can use flush to finish all pending tasks in order. The next task
+is only executed once the previous one has completed.
+
+See tests for more examples.
 
 ### Parameters
 
