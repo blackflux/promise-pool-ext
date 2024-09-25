@@ -92,11 +92,19 @@ See tests for more examples.
 
 How many promises can resolve in parallel.
 
+Not supported for SeqWorker (since it is always one)
+
 #### timeout: Integer = undefined
 
 Maximum amount of time in ms that a promise can take to resolve before a failure is returned.
 
 If `0` or `undefined` is passes, no timeout is enforced.
+
+#### debounce: Boolean = undefined
+
+Only supported for SeqWorker.
+
+When set to true, will skip any queued tasks if there are subsequent ones.
 
 ## Errors
 
