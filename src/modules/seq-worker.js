@@ -21,19 +21,12 @@ export default (opt) => {
     }
     const task = tasks[0];
     if (task.done === true) {
-      tasks.shift();
+      tasks.splice(0, opt.debounce === true ? Math.max(1, tasks.length - 1) : 1);
       work();
       return;
     }
     if (typeof task.assignment === 'function') {
-      if (opt.debounce === true && tasks.length > 1) {
-        while (tasks.length > 1) {
-          tasks.shift();
-        }
-        work();
-      } else {
-        task.assignment = task.assignment();
-      }
+      task.assignment = task.assignment();
     }
   };
 
