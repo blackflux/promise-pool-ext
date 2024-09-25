@@ -75,4 +75,17 @@ describe('Testing Seq Worker', { record: console }, () => {
     const result = await worker.flush();
     expect(result).to.deep.equal(undefined);
   });
+
+  it('Basic debounce', async ({ recorder }) => {
+    const worker = SeqWorker({ debounce: true });
+    worker.enqueue(Worker(1, 200));
+    worker.enqueue(Worker(2, 100));
+    worker.enqueue(Worker(3, 100));
+    await sleep(500);
+    await worker.flush();
+    expect(recorder.get()).to.deep.equal([
+      'start 1', 'end 1',
+      'start 3', 'end 3'
+    ]);
+  });
 });

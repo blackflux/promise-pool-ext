@@ -3,7 +3,8 @@ import promiseTimeout from '../util/promise-timeout.js';
 
 export default (opt) => {
   Joi.assert(opt, Joi.object().keys({
-    timeout: Joi.number().integer().min(0).optional()
+    timeout: Joi.number().integer().min(0).optional(),
+    debounce: Joi.boolean().optional()
   }));
 
   let firstError = null;
@@ -20,7 +21,8 @@ export default (opt) => {
     }
     const task = tasks[0];
     if (task.done === true) {
-      tasks.shift();
+      const deleteCount = opt.debounce === true ? Math.max(1, tasks.length - 1) : 1;
+      tasks.splice(0, deleteCount);
       work();
       return;
     }
