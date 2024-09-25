@@ -21,7 +21,8 @@ export default (opt) => {
     }
     const task = tasks[0];
     if (task.done === true) {
-      tasks.splice(0, opt.debounce === true ? Math.max(1, tasks.length - 1) : 1);
+      const deleteCount = opt.debounce === true ? Math.max(1, tasks.length - 1) : 1;
+      tasks.splice(0, deleteCount);
       work();
       return;
     }
