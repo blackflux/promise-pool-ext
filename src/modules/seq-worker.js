@@ -3,7 +3,8 @@ import promiseTimeout from '../util/promise-timeout.js';
 
 export default (opt) => {
   Joi.assert(opt, Joi.object().keys({
-    timeout: Joi.number().integer().min(0).optional()
+    timeout: Joi.number().integer().min(0).optional(),
+    debounce: Joi.boolean().optional()
   }));
 
   let firstError = null;
@@ -25,7 +26,12 @@ export default (opt) => {
       return;
     }
     if (typeof task.assignment === 'function') {
-      task.assignment = task.assignment();
+      if (opt.debounce === true && tasks.length > 1) {
+        tasks.shift();
+        work();
+      } else {
+        task.assignment = task.assignment();
+      }
     }
   };
 
