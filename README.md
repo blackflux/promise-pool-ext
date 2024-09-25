@@ -104,7 +104,7 @@ If `0` or `undefined` is passes, no timeout is enforced.
 
 Only supported for SeqWorker.
 
-When set to true, will discard any queued tasks if there are subsequent ones.
+When set to true, will skip any queued tasks if there are subsequent ones.
 
 ## Errors
 
