@@ -27,7 +27,9 @@ export default (opt) => {
     }
     if (typeof task.assignment === 'function') {
       if (opt.debounce === true && tasks.length > 1) {
-        tasks.shift();
+        while (tasks.length > 1) {
+          tasks.shift();
+        }
         work();
       } else {
         task.assignment = task.assignment();
