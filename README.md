@@ -68,6 +68,8 @@ const manager = PoolManager({
 manager.get('data');
 ```
 
+The `requires` option can be set to `"*"` to make all previous tasks required.
+
 See tests for more examples
 
 ### SeqWorker
