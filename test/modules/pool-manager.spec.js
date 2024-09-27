@@ -182,5 +182,50 @@ describe('Testing Promise Pool Manager', { record: console }, () => {
       expect(err.message).to.deep.equal('Cycle detected: p1 <- p1');
       expect(recorder.get()).to.deep.equal([]);
     });
+
+    it('Testing star recursion error', async ({ recorder, capture }) => {
+      const err = await capture(() => PoolManager({
+        p1: {
+          requires: ['p2'],
+          fn: Worker('p1', 100)
+        },
+        p2: {
+          requires: '*',
+          fn: Worker('p1', 100)
+        }
+      }));
+      expect(err.message).to.deep.equal('Cycle detected: p1 <- p2 <- p1');
+      expect(recorder.get()).to.deep.equal([]);
+    });
+
+    it('Testing star requires', async ({ recorder }) => {
+      const manager = PoolManager({
+        a: {
+          fn: Worker('a', 10)
+        },
+        b: {
+          fn: Worker('b', 10)
+        },
+        c: {
+          fn: Worker('c', 10)
+        },
+        d: {
+          requires: '*',
+          fn: (...kwargs) => kwargs
+        }
+      });
+      const r = await manager.get('d');
+      expect(r).to.deep.equal([
+        { a: 'a', b: 'b', c: 'c' }
+      ]);
+      expect(recorder.get()).to.deep.equal([
+        'start a',
+        'start b',
+        'start c',
+        'end a',
+        'end b',
+        'end c'
+      ]);
+    });
   });
 });
