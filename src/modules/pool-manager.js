@@ -3,15 +3,26 @@ import Joi from 'joi-strict';
 import Pool from './pool.js';
 import checkCyclic from '../util/check-cyclic.js';
 
-export default (logic, opts) => {
-  Joi.assert(logic, Joi.object().min(1).pattern(
+export default (logic_, opts) => {
+  Joi.assert(logic_, Joi.object().min(1).pattern(
     Joi.string(),
     Joi.object().keys({
-      requires: Joi.array().items(Joi.string().valid(...Object.keys(logic))).optional(),
+      requires: Joi.alternatives(
+        Joi.array().items(Joi.string().valid(...Object.keys(logic_))),
+        Joi.string().valid('*')
+      ).optional(),
       if: Joi.function().optional(),
       fn: Joi.function()
     })
   ));
+  const logic = Object.fromEntries(
+    Object
+      .entries(logic_)
+      .map(([k, v], idx, arr) => [k, v.requires === '*' ? {
+        ...v,
+        requires: arr.slice(0, idx).map((e) => e[0])
+      } : v])
+  );
   checkCyclic(Object.entries(logic)
     .reduce((p, [k, v]) => Object.assign(p, { [k]: v.requires || [] }), {}));
 
