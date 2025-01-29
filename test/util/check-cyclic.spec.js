@@ -6,6 +6,7 @@ import checkCyclic from '../../src/util/check-cyclic.js';
 describe('Testing checkCyclic', () => {
   let Graph;
   let helper;
+
   beforeEach(() => {
     Graph = (cyclic) => new Promise((resolve) => {
       randomDag.graphlib({
