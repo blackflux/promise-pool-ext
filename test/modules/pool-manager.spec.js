@@ -151,7 +151,7 @@ describe('Testing Promise Pool Manager', { record: console }, () => {
         }
       });
       const err = await capture(() => manager.get('result'));
-      expect(err).to.deep.equal(['error']);
+      expect(err).to.deep.equal('error');
       expect(recorder.get()).to.deep.equal([]);
     });
 
