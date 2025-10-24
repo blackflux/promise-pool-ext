@@ -51,18 +51,13 @@ export default (logic_, opts) => {
           ready[n] = enqueue(n);
         });
         return pool(async () => {
-          try {
-            const kwargs = (await pool(task.requires.map((n) => async () => [n, await ready[n]])))
-              .reduce((p, [k, v]) => Object.assign(p, { [k]: v }), {});
-            if (task.if !== undefined && task.if(kwargs) !== true) {
-              return undefined;
-            }
-            return task.fn(kwargs);
-          } catch (err) {
-            throw Array.isArray(err)
-              ? err.find((e) => e instanceof Error) || err
-              : err;
+          const tasks = task.requires.map((n) => ready[n]);
+          const results = await Promise.all(tasks);
+          const kwargs = Object.fromEntries(task.requires.map((n, idx) => [n, results[idx]]));
+          if (task.if !== undefined && task.if(kwargs) !== true) {
+            return undefined;
           }
+          return task.fn(kwargs);
         });
       })();
     }
